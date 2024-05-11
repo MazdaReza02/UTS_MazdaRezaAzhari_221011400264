@@ -1,0 +1,34 @@
+# UTS_MazdaRezaAzhari_221011400264
+UTS_Mazda Reza Azhari_221011400264_04TPLE006
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+
+# Membuat DataFrame dari data yang diberikan
+data = {
+    'R&D Spend': [45, 10, 20, 32, 40, 14, 6],
+    'Administration': [1000.23, float('nan'), 76253.86, 63408.86, 28754.33, 119943.24, 134615.46],
+    'Marketing Spend': [124153.04, 110594.11, 113867.30, 129219.61, 118546.05, 156547.42, 147198.87],
+    'State': ['New York', 'Florida', 'California', 'California', 'California', 'Florida', 'California'],
+    'Profit': [64926.08, 146121.95, 118474.03, 97427.84, 78239.91, 132602.65, 156122.51]
+}
+
+df = pd.DataFrame(data)
+
+# 1. Identifikasi dan isi data kosong
+imputer = SimpleImputer(strategy='mean')
+df[['Administration']] = imputer.fit_transform(df[['Administration']])
+
+# 2. Lakukan one-hot encoding pada kolom 'State'
+df = pd.get_dummies(df, columns=['State'])
+
+# 3. Buat kolom baru 'Tax'
+df['Tax'] = (df['Profit'] + df['Marketing Spend'] + df['Administration']) * 0.05
+
+# 4. Jalankan StandardScaler
+scaler = StandardScaler()
+scaled_columns = ['R&D Spend', 'Administration', 'Marketing Spend', 'Profit', 'Tax']
+df[scaled_columns] = scaler.fit_transform(df[scaled_columns])
+
+# Tampilkan hasil pre-processing
+print(df)
